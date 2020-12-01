@@ -1,23 +1,21 @@
-cook_book = {
-  'Омлет': [
-    {'ingredient_name': 'Яйцо', 'quantity': 2, 'measure': 'шт.'},
-    {'ingredient_name': 'Молоко', 'quantity': 100, 'measure': 'мл'},
-    {'ingredient_name': 'Помидор', 'quantity': 2, 'measure': 'шт'}
-    ],
-  'Утка по-пекински': [
-    {'ingredient_name': 'Утка', 'quantity': 1, 'measure': 'шт'},
-    {'ingredient_name': 'Вода', 'quantity': 2, 'measure': 'л'},
-    {'ingredient_name': 'Мед', 'quantity': 3, 'measure': 'ст.л'},
-    {'ingredient_name': 'Соевый соус', 'quantity': 60, 'measure': 'мл'}
-    ],
-  'Запеченный картофель': [
-    {'ingredient_name': 'Картофель', 'quantity': 1, 'measure': 'кг'},
-    {'ingredient_name': 'Чеснок', 'quantity': 3, 'measure': 'зубч'},
-    {'ingredient_name': 'Сыр гауда', 'quantity': 100, 'measure': 'г'},
-    ],
-  }
+cook_book = {}
 
-person_count = 2
+def create_dict_from_file(file_name):
+  with open(file_name, encoding = 'utf8') as book:
+    for dish in book:
+      dish = book.readline().lower().strip()
+      num = book.readline().strip()
+      ingridient_list = []
+      cook_book.setdefault(dish, ingridient_list)
+      for ingridient in range(int(num)):
+        ingridient = book.readline().lower().strip().split(' | ')
+        ingridient = {'ingredient_name' : ingridient[0], 'quantity' : ingridient[1], 'measure' : ingridient[2]}
+        ingridient_list.append(ingridient)
+
+create_dict_from_file('recipes.txt')
+
+
+person_count = 1
 
 dishes_list = []
 
@@ -28,11 +26,10 @@ for dishes in cook_book.keys():
 def get_shop_list_by_dishes(dishes_list, person_count):
   for dishes, ingridient in cook_book.items():
     for product in ingridient:
-      edit_product = {}
-      edit_product.setdefault(product['ingredient_name'], product)
+      quantity_dict = {'measure' : product['measure'], 'quantity' : product['quantity']}
+      edit_product = {product['ingredient_name'] : quantity_dict}
       for quantity in edit_product.values():
-        quantity['quantity'] = quantity['quantity'] * person_count
-      del product['ingredient_name']
+        quantity['quantity'] = int(quantity['quantity']) * person_count
       print(edit_product)
 
 get_shop_list_by_dishes(dishes_list, person_count)
